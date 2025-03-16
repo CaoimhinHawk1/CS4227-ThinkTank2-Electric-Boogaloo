@@ -1,76 +1,75 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchProjects, joinProject, leaveProject } from '../../services/api';
-import { Project } from '../../models/project';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { fetchProjects, joinProject, leaveProject } from "../../services/api"
+import type { Project } from "../../models/project"
 
 interface ProjectsState {
-    projects: Project[];
-    status: 'idle' | 'loading' | 'succeeded' | 'failed';
-    error: string | null;
+  projects: Project[]
+  status: "idle" | "loading" | "succeeded" | "failed"
+  error: string | null
 }
 
 const initialState: ProjectsState = {
-    projects: [],
-    status: 'idle',
-    error: null,
-};
+  projects: [],
+  status: "idle",
+  error: null,
+}
 
 // Async thunk to fetch projects
 export const fetchProjectsAsync = createAsyncThunk(
-    'projects/fetchProjects',
-    async () => {
-        const response = await fetchProjects();
-        return response;
-    }
-);
+  "projects/fetchProjects",
+  async () => {
+      return await fetchProjects()
+  },
+)
 
 // Async thunk to join a project
 export const joinProjectAsync = createAsyncThunk(
-    'projects/joinProject',
-    async (id: string) => {
-        await joinProject(id);
-        return id;
-    }
-);
+  "projects/join",
+    async ({ projectId, userId }: { projectId: string; userId: string }) => {
+      const response = await joinProject(projectId, userId);
+      return response.data;
+  },
+)
 
 // Async thunk to leave a project
 export const leaveProjectAsync = createAsyncThunk(
-    'projects/leaveProject',
-    async (id: string) => {
-        await leaveProject(id);
-        return id;
-    }
+    "projects/leave",
+    async ({ projectId, userId }: { projectId: string; userId: string }) => {
+        const response = await leaveProject(projectId, userId); // Pass both projectId and userId to the API
+        return { projectId, userId }; // Return both projectId and userId for state updates
+    },
 );
 
 const projectsSlice = createSlice({
-    name: 'projects',
-    initialState,
-    reducers: {},
-    extraReducers: (builder) => {
+  name: "projects",
+  initialState,
+  reducers: {},
+    extraReducers: builder => {
         builder
-            .addCase(fetchProjectsAsync.pending, (state) => {
-                state.status = 'loading';
+            .addCase(fetchProjectsAsync.pending, state => {
+                state.status = "loading";
             })
             .addCase(fetchProjectsAsync.fulfilled, (state, action) => {
-                state.status = 'succeeded';
+                state.status = "succeeded";
                 state.projects = action.payload;
             })
             .addCase(fetchProjectsAsync.rejected, (state, action) => {
-                state.status = 'failed';
-                state.error = action.error.message || 'Failed to fetch projects';
+                state.status = "failed";
+                state.error = action.error.message || "Failed to fetch projects";
             })
             .addCase(joinProjectAsync.fulfilled, (state, action) => {
-                const project = state.projects.find((p) => p.id === action.payload);
+                const project = state.projects.find((p) => p.id === action.payload.projectId);
                 if (project) {
                     project.participants++;
                 }
             })
             .addCase(leaveProjectAsync.fulfilled, (state, action) => {
-                const project = state.projects.find((p) => p.id === action.payload);
+                const project = state.projects.find((p) => p.id === action.payload.projectId);
                 if (project && project.participants > 0) {
                     project.participants--;
                 }
             });
     },
-});
+})
 
-export default projectsSlice.reducer;
+export default projectsSlice.reducer

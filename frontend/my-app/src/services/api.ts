@@ -14,10 +14,20 @@ export const fetchProjects = async () => {
         throw error;
     }
 };
-export const joinProject = async (id: string) => {
-    await api.post(`/${id}/join`);
+
+export const joinProject = async (projectId: string, userId: string) => {
+    const response = await api.post(`/projects/${projectId}/join`, null, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        params: {
+            userId,
+        },
+    });
+    return response.data;
 };
 
-export const leaveProject = async (id: string) => {
-    await api.post(`/${id}/leave`);
+export const leaveProject = async (projectId: string, userId: string) => {
+    const response = await axios.post(`/api/projects/${projectId}/leave`, { userId });
+    return response.data;
 };
