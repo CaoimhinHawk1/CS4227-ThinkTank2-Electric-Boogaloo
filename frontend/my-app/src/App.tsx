@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { fetchHello } from './services/api';
+import React from 'react';
+import Dashboard from './Dashboard';
 
-function App() {
-    const [message, setMessage] = useState('');
-
-    useEffect(() => {
-        fetchHello().then((data) => setMessage(data));
-    }, []);
-
+const App: React.FC = () => {
     return (
         <div>
-            <h1>{message}</h1>
+            <Dashboard />
         </div>
     );
-}
+};
 
 export default App;

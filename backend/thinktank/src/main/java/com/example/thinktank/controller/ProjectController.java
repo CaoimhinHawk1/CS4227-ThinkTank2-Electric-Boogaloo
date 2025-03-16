@@ -8,7 +8,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/projects")
-@CrossOrigin(origins = "http://localhost:5173") // Allow requests from the frontend
 public class ProjectController {
     private final ProjectService projectService;
 
