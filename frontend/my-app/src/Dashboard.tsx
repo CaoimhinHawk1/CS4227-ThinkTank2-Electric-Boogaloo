@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import type { FC } from 'react';
+import { useAppDispatch, useAppSelector } from './app/hooks';
 import { fetchProjectsAsync, joinProjectAsync, leaveProjectAsync } from './features/projects/projectSlice';
-import { RootState, AppDispatch } from './app/store';
+import type { RootState, AppDispatch } from './app/store';
 
-
-const Dashboard: React.FC = () => {
-    const dispatch = useDispatch<AppDispatch>();
-    const projects = useSelector((state: RootState) => state.projects.projects);
-    const status = useSelector((state: RootState) => state.projects.status);
-    const error = useSelector((state: RootState) => state.projects.error);
+const Dashboard: FC = () => {
+    const dispatch = useAppDispatch<AppDispatch>();
+    const projects = useAppSelector((state: RootState) => state.projects.projects);
+    const status = useAppSelector((state: RootState) => state.projects.status);
+    const error = useAppSelector((state: RootState) => state.projects.error);
 
     useEffect(() => {
         dispatch(fetchProjectsAsync());
@@ -23,27 +23,45 @@ const Dashboard: React.FC = () => {
     };
 
     if (status === 'loading') {
-        return <div>Loading...</div>;
+        return <div className="flex justify-center items-center h-screen">Loading...</div>;
     }
 
     if (status === 'failed') {
-        return <div>Error: {error}</div>;
+        return <div className="flex justify-center items-center h-screen text-red-500">Error: {error}</div>;
     }
 
     return (
-        <div>
-            <h1>ThinkTank Research Projects</h1>
-            <ul>
-                {projects.map((project) => (
-                    <li key={project.id}>
-                        <h2>{project.name}</h2>
-                        <p>{project.description}</p>
-                        <p>Participants: {project.participants}</p>
-                        <button onClick={() => handleJoin(project.id)}>Join</button>
-                        <button onClick={() => handleLeave(project.id)}>Leave</button>
-                    </li>
-                ))}
-            </ul>
+        <div className="min-h-screen bg-gray-100 py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h1 className="text-3xl font-bold text-gray-900 mb-8">ThinkTank Research Projects</h1>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {projects.map((project) => (
+                        <div key={project.id} className="bg-white shadow-lg rounded-lg p-6">
+                            <h2 className="text-xl font-semibold text-gray-800">{project.name}</h2>
+                            <p className="mt-2 text-gray-600">{project.description}</p>
+                            <div className="mt-4 flex items-center justify-between">
+                                <p className="text-sm text-gray-500">
+                                    Participants: <span className="font-medium">{project.participants}</span>
+                                </p>
+                                <div className="flex space-x-2">
+                                    <button
+                                        onClick={() => handleJoin(project.id)}
+                                        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
+                                    >
+                                        Join
+                                    </button>
+                                    <button
+                                        onClick={() => handleLeave(project.id)}
+                                        className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-200"
+                                    >
+                                        Leave
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 };
