@@ -1,7 +1,8 @@
 import type React from 'react';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchProjectsAsync, joinProjectAsync, leaveProjectAsync } from '../features/projects/projectSlice';
+// import { fetchProjectsAsync, joinProjectAsync, leaveProjectAsync } from '../features/projects/projectSlice';
+import { joinProject, leaveProject } from "../features/projects/projectSlice";
 import type { RootState, AppDispatch } from '../app/store';
 import Cookies from 'js-cookie';
 
@@ -11,44 +12,59 @@ const Dashboard: React.FC = () => {
     const status = useAppSelector((state: RootState) => state.projects.status);
     const error = useAppSelector((state: RootState) => state.projects.error);
 
-    useEffect(() => {
-        dispatch(fetchProjectsAsync());
-    }, [dispatch]);
+    // useEffect(() => {
+    //     dispatch(fetchProjectsAsync());
+    // }, [dispatch]);
 
     const handleJoin = (projectId: string) => {
-        let userId = Cookies.get('userId');
-        if (!userId) {
-            userId = Math.random().toString(36).substring(7);
-            Cookies.set('userId', userId, { expires: 1 });
-        }
+        // let userId = Cookies.get('userId');
+        // if (!userId) {
+        //     userId = Math.random().toString(36).substring(7);
+        //     Cookies.set('userId', userId, { expires: 1 });
+        // }
+        //
+        // // Get the joined projects from the cookie
+        // const joinedProjects = Cookies.get('joinedProjects');
+        // const joinedProjectsArray = joinedProjects ? JSON.parse(joinedProjects) : [];
+        //
+        // // Check if the user has already joined the project
+        // if (joinedProjectsArray.includes(userId)) {
+        //     alert('You have already joined this project.');
+        //     return;
+        // }
+        //
+        // // Add the project ID to the joined projects array
+        // joinedProjectsArray.push(userId);
+        // Cookies.set('joinedProjects', JSON.stringify(joinedProjectsArray), { expires: 1 });
 
-        // Get the joined projects from the cookie
-        const joinedProjects = Cookies.get('joinedProjects');
-        const joinedProjectsArray = joinedProjects ? JSON.parse(joinedProjects) : [];
+        // // Dispatch the join project action
+        // dispatch(joinProjectAsync({ projectId, userId }));
 
-        // Check if the user has already joined the project
-        if (joinedProjectsArray.includes(userId)) {
-            alert('You have already joined this project.');
-            return;
-        }
-
-        // Add the project ID to the joined projects array
-        joinedProjectsArray.push(userId);
-        Cookies.set('joinedProjects', JSON.stringify(joinedProjectsArray), { expires: 1 });
-
-        // Dispatch the join project action
-        dispatch(joinProjectAsync({ projectId, userId }));
-    };
-
-    const handleLeave = (projectId: string) => {
-        const userId = Cookies.get('userId');
+        const userId = Cookies.get("userId");
         if (!userId) {
             alert("User not identified.");
             return;
         }
+        dispatch(joinProject({ projectId, userId }));
+    };
 
-        console.log("Leaving project:", projectId, "with userId:", userId)
-        dispatch(leaveProjectAsync({ projectId, userId }));
+
+    const handleLeave = (projectId: string) => {
+        // const userId = Cookies.get('userId');
+        // if (!userId) {
+        //     alert("User not identified.");
+        //     return;
+        // }
+        //
+        // console.log("Leaving project:", projectId, "with userId:", userId)
+        // dispatch(leaveProjectAsync({ projectId, userId }));
+
+        const userId = Cookies.get("userId");
+        if (!userId) {
+            alert("User not identified.");
+            return;
+        }
+        dispatch(leaveProject({ projectId, userId }));
     };
 
         if (status === 'loading') {
