@@ -40,10 +40,10 @@ const Dashboard: React.FC = () => {
         // // Dispatch the join project action
         // dispatch(joinProjectAsync({ projectId, userId }));
 
-        const userId = Cookies.get("userId");
+        let userId = Cookies.get("userId");
         if (!userId) {
-            alert("User not identified.");
-            return;
+            userId = Math.random().toString(36).substring(7);
+            Cookies.set('userId', userId, { expires: 1 });
         }
         dispatch(joinProject({ projectId, userId }));
     };
@@ -59,11 +59,11 @@ const Dashboard: React.FC = () => {
         // console.log("Leaving project:", projectId, "with userId:", userId)
         // dispatch(leaveProjectAsync({ projectId, userId }));
 
-        const userId = Cookies.get("userId");
+        let userId = Cookies.get("userId");
         if (!userId) {
-            alert("User not identified.");
-            return;
-        }
+            userId = Math.random().toString(36).substring(7);
+            Cookies.set('userId', userId, { expires: 1 });
+            }
         dispatch(leaveProject({ projectId, userId }));
     };
 
