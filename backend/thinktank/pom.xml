@@ -27,6 +27,8 @@
 		<url/>
 	</scm>
 	<properties>
+		<sonar.organization>caoimhinhawk1</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<java.version>17</java.version>
 		<spring-ai.version>1.0.0-M6</spring-ai.version>
 	</properties>
