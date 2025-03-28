@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -19,6 +19,9 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
+
+      - name: Build with Maven
+        run: mvn clean install  # Ensure Java classes are compiled
 
       - name: Install SonarScanner
         run: npm install -g sonarqube-scanner
@@ -33,4 +36,3 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$SONAR_TOKEN \
             -Dsonar.java.binaries=target
-
